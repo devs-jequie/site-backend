@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"msjsdiag.debugger-for-chrome",
+    "esbenp.prettier-vscode",
+    "VisualStudioExptTeam.vscodeintellicode",
+    "dbaeumer.vscode-eslint"
+	]
+}
