@@ -7,7 +7,13 @@ export default class UsersSchema extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary()
 
-      table.integer('role_id').unsigned().references('role_id').inTable('roles').onDelete('CASCADE')
+      table
+        .integer('role_id')
+        .unsigned()
+        .references('id')
+        .inTable('roles')
+        .notNullable()
+        .defaultTo(null)
 
       table.string('name').notNullable()
       table.string('email').notNullable()
@@ -16,7 +22,7 @@ export default class UsersSchema extends BaseSchema {
 
       table.string('image_url')
       table.string('nationality')
-      table.string('postalCode')
+      table.string('postal_code')
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
