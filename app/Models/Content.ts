@@ -12,7 +12,7 @@ import Tag from './Tag'
 
 export default class Content extends BaseModel {
   @column({ isPrimary: true })
-  public content_id: number
+  public id: number
 
   @column()
   public description: string

@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid'
 
 export default class extends BaseSeeder {
   public async run() {
-    // Write your database queries inside the run method
     await User.createMany([
       {
         id: uuidv4(),
@@ -12,6 +11,7 @@ export default class extends BaseSeeder {
         password: 'secret',
         name: 'virk',
         status: 'active',
+        roleId: 1,
       },
       {
         id: uuidv4(),
@@ -19,6 +19,7 @@ export default class extends BaseSeeder {
         password: 'supersecret',
         name: 'romain',
         status: 'active',
+        roleId: 1,
       },
     ])
   }
