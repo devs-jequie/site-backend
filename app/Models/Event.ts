@@ -5,7 +5,7 @@ import EventParticipant from './EventParticipant'
 
 export default class Event extends BaseModel {
   @column({ isPrimary: true })
-  public event_id: number
+  public id: number
 
   @column()
   public title: string

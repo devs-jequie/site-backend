@@ -27,6 +27,9 @@ export default class User extends BaseModel {
   public id: string
 
   @column()
+  public roleId: number
+
+  @column()
   public name: string
 
   @column()

@@ -5,7 +5,7 @@ export default class EventsSchema extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('event_id').primary()
+      table.increments('id').primary()
 
       table.uuid('creator_id').references('id').inTable('users').onDelete('CASCADE')
 

@@ -3,7 +3,7 @@ import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class About extends BaseModel {
   @column({ isPrimary: true })
-  public about_id: number
+  public id: number
 
   @column()
   public hero_background_image_link: string

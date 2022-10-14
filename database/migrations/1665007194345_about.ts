@@ -5,7 +5,7 @@ export default class AboutSchema extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('about_id').primary()
+      table.increments('id').primary()
 
       table.string('hero_background_image_link').notNullable()
       table.string('hero_title').notNullable()

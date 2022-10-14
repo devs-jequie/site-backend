@@ -4,7 +4,8 @@
     "./commands",
     "@adonisjs/core/build/commands/index.js",
     "@adonisjs/repl/build/commands",
-    "@adonisjs/lucid/build/commands"
+    "@adonisjs/lucid/build/commands",
+    "adonis5-swagger/build/commands"
   ],
   "exceptionHandlerNamespace": "App/Exceptions/Handler",
   "aliases": {
@@ -23,7 +24,8 @@
     "@adonisjs/session",
     "@adonisjs/lucid",
     "@adonisjs/auth",
-    "@adonisjs/ally"
+    "@adonisjs/ally",
+    "adonis5-swagger"
   ],
   "aceProviders": [
     "@adonisjs/repl"
