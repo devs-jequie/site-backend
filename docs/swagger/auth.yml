@@ -1,0 +1,34 @@
+/api/login:
+  post:
+    tags:
+      - Auth
+    security: []
+    description: Autenticar um usuario no backend.
+    parameters:
+      - name: Credenciais
+        in: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+              example: 'user@email.com'
+              required: true
+            password:
+              type: string
+              example: '123123'
+              required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Successo
+        content:
+          application/json:
+            schema:
+              properties:
+                token:
+                  type: string
+                  example: 'abcd123abcd123'
+      401:
+        description: Usuario ou senha invalidos
