@@ -1,14 +1,15 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.post('login', 'AuthController.store') //.middleware('auth:web,api')
-  Route.post('/logout', 'AuthController.logout').middleware('auth:web,api')
+  Route.post('/logout', 'AuthController.logout')
   Route.group(() => {
     Route.post('/', 'UsersController.store')
-    Route.get('/', 'UsersController.index').middleware('auth:web,api')
-    Route.get('/:id', 'UsersController.show').middleware('auth:web,api')
-    Route.patch('/:id', 'UsersController.update').middleware('auth:web,api')
-    Route.put('/:id', 'UsersController.update').middleware('auth:web,api')
-    Route.delete('/:id', 'UsersController.destroy').middleware('auth:web,api')
+    Route.get('/', 'UsersController.index')
+    Route.get('/:id', 'UsersController.show')
+    Route.patch('/:id', 'UsersController.update')
+    Route.put('/:id', 'UsersController.update')
+    Route.delete('/:id', 'UsersController.destroy')
   }).prefix('users')
-}).prefix('api')
+  Route.resource('team-member', 'TeamMembersController').apiOnly
+}).prefix('api').middleware('auth:web,api')
+Route.post('login', 'AuthController.store').prefix('api')
