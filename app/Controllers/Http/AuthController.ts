@@ -30,9 +30,9 @@ export default class AuthController {
     await auth.use('api').logout()
 
     if(auth.use('api').isLoggedOut){
-      response.status(200).send({message:'Usuário desconectado'})
+      response.status(200).send({message:'User disconnected'})
     }else{
-      response.status(400).send({error:'Não foi possível desconectado o usuário'})
+      response.status(400).send({error:'Unable to disconnect user'})
     }
     
   }
