@@ -26,14 +26,13 @@ export default class AuthController {
     return token
   }
 
-  public async logout({auth,response}){
+  public async logout({ auth, response }) {
     await auth.use('api').logout()
 
-    if(auth.use('api').isLoggedOut){
-      response.status(200).send({message:'User disconnected'})
-    }else{
-      response.status(400).send({error:'Unable to disconnect user'})
+    if (auth.use('api').isLoggedOut) {
+      response.status(200).send({ message: 'User disconnected' })
+    } else {
+      response.status(400).send({ error: 'Unable to disconnect user' })
     }
-    
   }
 }
