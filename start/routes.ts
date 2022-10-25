@@ -22,6 +22,11 @@ Route.group(() => {
     Route.delete('/:id', 'EventsController.destroy').middleware('auth:web,api')
   }).prefix('events')
   Route.get('/team-member/list', 'TeamMembersController.list')
-  Route.resource('team-member', 'TeamMembersController').apiOnly
-}).prefix('api')
+  Route.resource('team-member', 'TeamMembersController')
+    .apiOnly()
+    .where('id', Route.matchers.uuid())
+})
+  .prefix('api')
+  .middleware('auth:web,api')
+
 

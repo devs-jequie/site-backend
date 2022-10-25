@@ -5,7 +5,7 @@ export default class TeamMemberSchema extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.uuid('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
 
       table.string('github_link')
       table.string('linkedin_link')
