@@ -8,6 +8,9 @@ export default class Event extends BaseModel {
   public id: number
 
   @column()
+  public creatorId: string
+
+  @column()
   public title: string
 
   @column()
@@ -37,8 +40,11 @@ export default class Event extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @belongsTo(() => User)
-  public creator: BelongsTo<typeof User>
+  @belongsTo(() => User, {
+    localKey: 'id',
+    foreignKey: 'creatorId',
+  })
+  public user: BelongsTo<typeof User>
 
   @hasMany(() => EventParticipant)
   public event_participant: HasMany<typeof EventParticipant>

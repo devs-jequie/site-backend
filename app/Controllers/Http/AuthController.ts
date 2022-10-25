@@ -5,12 +5,12 @@ import Hash from '@ioc:Adonis/Core/Hash'
 
 export default class AuthController {
   public async store({ auth, request, response }: HttpContextContract) {
-    const validarLogin = schema.create({
+    const validateLogin = schema.create({
       email: schema.string({ trim: true }, [rules.email()]),
-      password: schema.string([rules.maxLength(255)]),
+      password: schema.string([rules.maxLength(32)]),
     })
 
-    await request.validate({ schema: validarLogin })
+    await request.validate({ schema: validateLogin })
 
     const email = request.input('email')
     const password = request.input('password')
@@ -26,14 +26,13 @@ export default class AuthController {
     return token
   }
 
-  public async logout({auth,response}){
+  public async logout({ auth, response }) {
     await auth.use('api').logout()
 
-    if(auth.use('api').isLoggedOut){
-      response.status(200).send({message:'Usuário desconectado'})
-    }else{
-      response.status(400).send({error:'Não foi possível desconectado o usuário'})
+    if (auth.use('api').isLoggedOut) {
+      response.status(200).send({ message: 'Success! User logged out!' })
+    } else {
+      response.status(400).send({ error: 'Sorry! Unable to disconnect user' })
     }
-    
   }
 }

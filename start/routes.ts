@@ -11,4 +11,12 @@ Route.group(() => {
     Route.put('/:id', 'UsersController.update').middleware('auth:web,api')
     Route.delete('/:id', 'UsersController.destroy').middleware('auth:web,api')
   }).prefix('users')
+  Route.group(() => {
+    Route.post('/', 'EventsController.store').middleware('auth:web,api')
+    Route.get('/', 'EventsController.index')
+    Route.get('/:id', 'EventsController.show').middleware('auth:web,api')
+    Route.patch('/:id', 'EventsController.update').middleware('auth:web,api')
+    Route.put('/:id', 'EventsController.update').middleware('auth:web,api')
+    Route.delete('/:id', 'EventsController.destroy').middleware('auth:web,api')
+  }).prefix('events')
 }).prefix('api')
