@@ -1,11 +1,22 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import TeamMember from 'App/Models/TeamMember'
+import {
+  teamMemberServiceDestroy,
+  teamMemberServiceGetById,
+  teamMemberServiceListAll,
+  teamMemberServiceStore,
+  teamMemberServiceUpdate,
+} from 'App/Services/TeamMemberService'
 
 export default class TeamMembersController {
   public async store({ request, response }: HttpContextContract) {
     const validarTeamMember = schema.create({
-      id: schema.string([rules.trim(), rules.exists({ table: 'users', column: 'id' })]),
+      user_id: schema.string([
+        rules.trim(),
+        rules.exists({ table: 'users', column: 'id' }),
+        rules.unique({ table: 'team_members', column: 'user_id' }),
+      ]),
       github_link: schema.string.optional([
         rules.trim(),
         rules.maxLength(255),
@@ -18,11 +29,19 @@ export default class TeamMembersController {
       ]),
     })
 
-    const playload = await request.validate({ schema: validarTeamMember })
+    try {
+      const playload = await request.validate({ schema: validarTeamMember })
 
-    const teamMember: TeamMember = await TeamMember.create(playload)
+      const data = await teamMemberServiceStore(playload)
 
-    return response.created(teamMember)
+      if (!data) {
+        return response.status(500).json({ message: 'Could not create user' })
+      }
+
+      response.created(data)
+    } catch (error) {
+      response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 
   public async update({ params, request, response }: HttpContextContract) {
@@ -39,42 +58,65 @@ export default class TeamMembersController {
       ]),
     })
 
-    const teamMember = await TeamMember.find(params.id)
+    try {
+      const { id } = params
+      const playload = await request.validate({ schema: validarTeamMember })
 
-    if (!teamMember) return response.notFound({ message: 'Team Member not found' })
+      const data = await teamMemberServiceUpdate(id, playload?.github_link, playload?.linkedin_link)
 
-    const playload = await request.validate({ schema: validarTeamMember })
+      if (data === 404) return response.notFound({ message: 'Team Member not found' })
+      if (!data) return response.status(500).json({ message: 'Server error, try again later' })
 
-    await teamMember
-      .merge({ github_link: playload?.github_link, linkedin_link: playload?.linkedin_link })
-      .save()
-
-    return response.ok(teamMember)
+      return response.ok(data)
+    } catch (error) {
+      response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 
-  public async show({ params, response }: HttpContextContract) {
+  public async show({ params, request, response }: HttpContextContract) {
+    try {
+      const { id } = params
+      const { user } = request.qs()
 
-    const teamMember = await TeamMember.find(params.id)
+      const data = await teamMemberServiceGetById(id, user === 'true')
 
-    if (!teamMember) return response.notFound({ message: 'Team Member not found' })
+      if (!data) {
+        return response.notFound({ message: 'User Not Found' })
+      }
 
-    return response.ok(teamMember)
+      return response.ok(data)
+    } catch (error) {
+      response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 
-  public async list({ response }: HttpContextContract) {
+  public async list({ request, response }: HttpContextContract) {
+    try {
+      const { user } = request.qs()
 
-    const teamMember = await TeamMember.all()
+      const data = await teamMemberServiceListAll(user === 'true')
 
-    return response.ok(teamMember)
+      if (!data) {
+        return response.notFound({ message: 'No User found' })
+      }
+
+      return response.ok(data)
+    } catch (error) {
+      response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 
   public async destroy({ params, response }: HttpContextContract) {
-    const teamMember = await TeamMember.find(params.id)
+    try {
+      const { id } = params
 
-    if (!teamMember) return response.notFound({ message: 'Team Member not found' })
+      const result = await teamMemberServiceDestroy(id)
 
-    teamMember.delete()
+      if (!result) return response.notFound({ message: 'Team Member not found' })
 
-    return response.ok({ message: 'Success! Team Member has been deleted' })
+      return response.ok({ message: 'Success! Team Member has been deleted' })
+    } catch (error) {
+      response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 }

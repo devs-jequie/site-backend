@@ -4,7 +4,7 @@ import User from './User'
 
 export default class TeamMember extends BaseModel {
   @column({ isPrimary: true })
-  public id: string
+  public userId: string
 
   @column()
   public github_link: string
