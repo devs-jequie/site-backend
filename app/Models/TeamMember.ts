@@ -3,6 +3,9 @@ import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 
 export default class TeamMember extends BaseModel {
+  @column({ isPrimary: true })
+  public id: string
+
   @column()
   public github_link: string
 

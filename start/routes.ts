@@ -1,7 +1,9 @@
 import Route from '@ioc:Adonis/Core/Route'
 
+import Route from '@ioc:Adonis/Core/Route'
+
 Route.group(() => {
-  Route.post('login', 'AuthController.store') //.middleware('auth:web,api')
+  Route.post('login', 'AuthController.store')
   Route.post('/logout', 'AuthController.logout').middleware('auth:web,api')
   Route.group(() => {
     Route.post('/', 'UsersController.store')
@@ -19,4 +21,7 @@ Route.group(() => {
     Route.put('/:id', 'EventsController.update').middleware('auth:web,api')
     Route.delete('/:id', 'EventsController.destroy').middleware('auth:web,api')
   }).prefix('events')
+  Route.get('/team-member/list', 'TeamMembersController.list')
+  Route.resource('team-member', 'TeamMembersController').apiOnly
 }).prefix('api')
+
