@@ -32,3 +32,14 @@
                   example: 'abcd123abcd123'
       401:
         description: Usuario ou senha invalidos
+/api/logout:
+  post:
+    tags:
+      - Auth
+    security: []
+    description: Desconetar o usuario.
+    responses:
+      200:
+        description: User disconnected
+      400:
+        description: Unable to disconnect user

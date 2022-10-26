@@ -28,14 +28,12 @@ export default class TeamMembersController {
         rules.url({ allowedHosts: ['linkedin.com', 'www.linkedin.com'] }),
       ]),
     })
-
+    const playload = await request.validate({ schema: validarTeamMember })
     try {
-      const playload = await request.validate({ schema: validarTeamMember })
-
       const data = await teamMemberServiceStore(playload)
 
       if (!data) {
-        return response.status(500).json({ message: 'Could not create user' })
+        return response.status(503).json({ message: 'Could not create Team Member' })
       }
 
       response.created(data)
@@ -57,15 +55,14 @@ export default class TeamMembersController {
         rules.url({ allowedHosts: ['www.linkedin.com', 'linkedin.com'] }),
       ]),
     })
-
+    const playload = await request.validate({ schema: validarTeamMember })
     try {
       const { id } = params
-      const playload = await request.validate({ schema: validarTeamMember })
 
       const data = await teamMemberServiceUpdate(id, playload?.github_link, playload?.linkedin_link)
 
       if (data === 404) return response.notFound({ message: 'Team Member not found' })
-      if (!data) return response.status(500).json({ message: 'Server error, try again later' })
+      if (!data) return response.status(503).json({ message: 'Could not update Team Member' })
 
       return response.ok(data)
     } catch (error) {
@@ -90,7 +87,7 @@ export default class TeamMembersController {
     }
   }
 
-  public async list({ request, response }: HttpContextContract) {
+  public async index({ request, response }: HttpContextContract) {
     try {
       const { user } = request.qs()
 

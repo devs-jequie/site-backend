@@ -1,94 +1,248 @@
-/api/team-member/list:
-  get:
-    tags:
-      - Team Member
-    security: []
-    description: Listar todos os team members
-    parameters:
-      - in: query
-        name: user
-        schema:
-          type: boolean
-          example: true
-        description: Trazer os dados da tabela de usuário do team member
-    produces:
-      - application/json
-    responses:
-      200:
-        content:
-          application/json:
-            schema:
-              oneOf:
-                - $ref: '#/definitions/UserTrue'
-                - $ref: '#/definitions/UserFalse'
+paths:
+  /api/team-member/:
+    get:
+      tags:
+        - Team Member
+      security: []
+      description: Listar todos os team members
+      parameters:
+        - in: query
+          name: user
+          schema:
+            type: boolean
+            example: true
+          description: Trazer os dados da tabela de usuário do team member
+      produces:
+        - application/json
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions'
+              examples:
+                user = true:
+                  $ref: '#/definitions/examples/usertrue'
+                user = false:
+                  $ref: '#/definitions/examples/userfalse'
+        404:
+          description: 'No User found'
+        500:
+          description: 'Server error, try again later'
+
+    post:
+      tags:
+        - Team Member
+      security: []
+      description: Criar um Team Member.
+      parameters:
+        - name: Dados
+          in: body
+          required: true
+          schema:
+            properties:
+              user_id:
+                type: string
+                example: '27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668'
+                required: true
+              github_link:
+                type: string
+                example: 'https://github.com/Mateus'
+              linkedin_link:
+                type: string
+                example: 'https://linkedin.com/in/wellington/'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                properties:
+                  user_id:
+                    type: string
+                    example: '27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668'
+                  github_link:
+                    type: string
+                    example: 'https://github.com/Mateus'
+                  linkedin_link:
+                    type: string
+                    example: 'https://linkedin.com/in/wellington/'
+                  created_at:
+                    type: string
+                    example: '2022-10-21T19:49:22.246-03:00'
+                  update_at:
+                    type:
+                    example: '2022-10-23T12:50:26.978-03:00'
+        422:
+          description: Erro em algum dado do body, podendo ser de tipo, obrigatoriedade, existente, tamanho e url em formato incorreto
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    example:
+                      [
+                        {
+                          rule: 'required',
+                          field: 'user_id',
+                          message: 'required validation failed',
+                        },
+                      ]
+        500:
+          description: Server error, try again later
+        503:
+          description: Could not create Team Member
+  /api/team-member/{id}:
+    patch:
+      tags:
+        - Team Member
+      security: []
+      description: Atualizar um Team Member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - name: Dados
+          in: body
+          required: true
+          schema:
+            properties:
+              user_id:
+                type: string
+                example: '27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668'
+                required: true
+              github_link:
+                type: string
+                example: 'https://github.com/Mateus'
+              linkedin_link:
+                type: string
+                example: 'https://linkedin.com/in/wellington/'
+              created_at:
+                type: string
+                example: '2022-10-21T19:49:22.246-03:00'
+              update_at:
+                type:
+                example: '2022-10-23T12:50:26.978-03:00'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                properties:
+                  user_id:
+                    type: string
+                    example: '27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668'
+                  github_link:
+                    type: string
+                    example: 'https://github.com/Mateus'
+                  linkedin_link:
+                    type: string
+                    example: 'https://linkedin.com/in/wellington/'
+        422:
+          description: Erro em algum dado do body, podendo ser de tipo, obrigatoriedade, existente, tamanho e url em formato incorreto
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    example:
+                      [
+                        {
+                          rule: 'required',
+                          field: 'user_id',
+                          message: 'required validation failed',
+                        },
+                      ]
+        500:
+          description: Server error, try again later
+        503:
+          description: Could not update Team Member
+
+    delete:
+      tags:
+        - Team Member
+      security: []
+      description: Deletar um Team Member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: Success! Team Member has been deleted
+        404:
+          description: Team Member not found
+        500:
+          description: Server error, try again later
+    get:
+      tags:
+        - Team Member
+      security: []
+      description: Buscar um Team Member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: user
+          schema:
+            type: boolean
+          description: Trazer os dados da tabela de usuário do team member
+      produces:
+        - application/json
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions'
+              examples:
+                user = true:
+                  $ref: '#/definitions/examples/usertrue'
+                user = false:
+                  $ref: '#/definitions/examples/userfalse'
+        404:
+          description: 'No User found'
+        500:
+          description: 'Server error, try again later'
 
 definitions:
-  UserTrue:
-    type: object
-    properties:
-      user_id:
-        type: string
-        example: 27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668
-      github_link:
-        type: string
-        example: https://github.com/WellingtonSI
-      linkedin_link:
-        type: string
-        example: https://linkedin.com/in/wellington/
-      created_at:
-        type: string
-        example: 2022-10-21T19:49:22.246-03:00
-      updated_at:
-        type: string
-        example: 2022-10-23T12:50:26.978-03:00
-      user:
-        type: object
-        properties:
-          id:
-            type: string
-            example: 27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668
-          role_id:
-            type: number
-            example: 1
-          name:
-            type: string
-            example: virk
-          email:
-            type: string
-            example: virk@adonisjs.com
-          status:
-            type: string
-            example: active
-          image_url:
-            type: string
-            example: null
-          nationality:
-            type: string
-            example: brasileiro
-          postal_code:
-            type: string
-            example: 4520000
-          created_at:
-            type: string
-            example: 2022-10-21T17:53:37.786-03:00
-          updated_at:
-            type: string
-            example: 2022-10-21T17:53:37.787-03:00
-  UserFalse:
-    type: object
-    properties:
-      user_id:
-        type: string
-        example: 27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668
-      github_link:
-        type: string
-        example: https://github.com/WellingtonSI
-      linkedin_link:
-        type: string
-        example: https://linkedin.com/in/wellington/
-      created_at:
-        type: string
-        example: 2022-10-21T19:49:22.246-03:00
-      updated_at:
-        type: string
-        example: 2022-10-23T12:50:26.978-03:00
+  examples:
+    usertrue:
+      value:
+        user_id: '27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668'
+        github_link: 'https://github.com/WellingtonSI'
+        linkedin_link: 'https://linkedin.com/in/wellington/'
+        created_at: '2022-10-21T19:49:22.246-03:00'
+        updated_at: '2022-10-23T12:50:26.978-03:00'
+        user:
+          id: '27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668'
+          role_id: 1
+          name: 'virk'
+          email: 'virk@adonisjs.com'
+          status: 'active'
+          image_url: null
+          nationality: 'brasileiro'
+          postal_code: 4520000
+          created_at: '2022-10-21T17:53:37.786-03:00'
+          updated_at: '2022-10-21T17:53:37.787-03:00'
+
+    userfalse:
+      value:
+        user_id: '27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668'
+        github_link: 'https://github.com/WellingtonSI'
+        linkedin_link: 'https://linkedin.com/in/wellington/'
+        created_at: '2022-10-21T19:49:22.246-03:00'
+        updated_at: '2022-10-23T12:50:26.978-03:00'
