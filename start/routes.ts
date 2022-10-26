@@ -10,7 +10,6 @@ Route.group(() => {
     Route.put('/:id', 'UsersController.update')
     Route.delete('/:id', 'UsersController.destroy')
   }).prefix('users')
-  //Route.get('/team-member/', 'TeamMembersController.list')
   Route.resource('team-member', 'TeamMembersController')
     .apiOnly()
     .where('id', Route.matchers.uuid())
