@@ -1,0 +1,70 @@
+TeamMemberList:
+  UserTrue:
+    type: object
+    properties:
+      user_id:
+        type: string
+        example: 27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668
+      github_link:
+        type: string
+        example: https://github.com/WellingtonSI
+      linkedin_link:
+        type: string
+        example: https://linkedin.com/in/wellington/
+      created_at:
+        type: string
+        example: 2022-10-21T19:49:22.246-03:00
+      updated_at:
+        type: string
+        example: 2022-10-23T12:50:26.978-03:00
+      user:
+        type: object
+        properties:
+          id:
+            type: string
+            example: 27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668
+          role_id:
+            type: number
+            example: 1
+          name:
+            type: string
+            example: virk
+          email:
+            type: string
+            example: virk@adonisjs.com
+          status:
+            type: string
+            example: active
+          image_url:
+            type: string
+            example: null
+          nationality:
+            type: string
+            example: brasileiro
+          postal_code:
+            type: string
+            example: 4520000
+          created_at:
+            type: string
+            example: 2022-10-21T17:53:37.786-03:00
+          updated_at:
+            type: string
+            example: 2022-10-21T17:53:37.787-03:00
+  UserFalse:
+    type: object
+    properties:
+      user_id:
+        type: string
+        example: 27fbf9c4-1ea3-45a9-b7f8-79bfd1e66668
+      github_link:
+        type: string
+        example: https://github.com/WellingtonSI
+      linkedin_link:
+        type: string
+        example: https://linkedin.com/in/wellington/
+      created_at:
+        type: string
+        example: 2022-10-21T19:49:22.246-03:00
+      updated_at:
+        type: string
+        example: 2022-10-23T12:50:26.978-03:00
