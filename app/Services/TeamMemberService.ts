@@ -22,7 +22,7 @@ export async function teamMemberServiceUpdate(
 
     if (!teamMember) return 404
 
-    await teamMember.merge({ github_link: github_link, linkedin_link: linkedin_link }).save()
+    await teamMember.merge({ github_link, linkedin_link }).save()
     return teamMember
   } catch (error) {
     return false
