@@ -1,24 +1,39 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Database from '@ioc:Adonis/Lucid/Database'
 import User from 'App/Models/User'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import {
+  userServiceDestroy,
+  userServiceGetById,
+  userServiceListAll,
+  userServiceStore,
+  userServiceUpdate,
+} from 'App/Services/UserService'
 
 export default class UsersController {
-  public async index({ response }: HttpContextContract) {
-    const users = await Database.from('users')
-      .join('roles', 'users.role_id', '=', 'roles.id')
-      .select('roles.role_name')
-      .select('users.name')
-      .select('users.email')
-      .select('users.status')
-      .select('users.nationality')
-      .select('users.postal_code')
-      .where('status', '=', 'active')
-    return response.ok({ users })
+  public async me({ auth, request, response }: HttpContextContract) {
+    try {
+      const user = await User.query().where('id', auth.user['id']).preload('role')
+
+      return response.ok({ user })
+    } catch (error) {}
+  }
+  public async index({ request, response }: HttpContextContract) {
+    try {
+      const { role } = request.qs()
+
+      const data = await userServiceListAll(role === 'true')
+
+      if (!data) {
+        response.status(503).json({ message: 'Unable to perform users search' })
+      }
+      return response.ok(data)
+    } catch (error) {
+      return response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 
   public async store({ request, response }: HttpContextContract) {
-    const createUserSchema = await schema.create({
+    const createUserSchema = schema.create({
       name: schema.string({ trim: true }, [rules.maxLength(50)]),
       email: schema.string({ trim: true }, [rules.email()]),
       password: schema.string({ trim: true }, [
@@ -30,29 +45,34 @@ export default class UsersController {
       nationality: schema.string.optional({ trim: true }),
       postalCode: schema.string({ trim: true }),
     })
-    const payload: any = await request.validate({ schema: createUserSchema })
-    payload.status = 'active'
-    payload.roleId = 2
-    const user: User = await User.create(payload)
-    return response.created(user)
+    const payload = await request.validate({ schema: createUserSchema })
+    try {
+      const data = await userServiceStore(payload)
+
+      if (!data) {
+        return response.status(503).json({ message: 'Could not create user' })
+      }
+      return response.created(data)
+    } catch (error) {
+      return response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 
-  public async show({ params, response }: HttpContextContract) {
-    const { id } = params
+  public async show({ params, request, response }: HttpContextContract) {
+    try {
+      const { id } = params
+      const { role } = request.qs()
 
-    const user = await User.query()
-      .select('users.name')
-      .select('users.email')
-      .select('users.status')
-      .select('users.nationality')
-      .select('users.postal_code')
-      .where('id', '=', id)
+      const data = await userServiceGetById(id, role === 'true')
 
-    if (!user) {
-      return response.notFound({ message: 'User not found' })
+      if (!data) {
+        return response.notFound({ message: 'User not found' })
+      }
+
+      return response.ok(data)
+    } catch (error) {
+      return response.status(500).json({ message: 'Server error, try again later' })
     }
-
-    return response.ok(user)
   }
 
   public async update({ params, request, response }: HttpContextContract) {
@@ -68,33 +88,32 @@ export default class UsersController {
       nationality: schema.string.optional({ trim: true }),
       postalCode: schema.string.optional({ trim: true }),
     })
-    const payload: any = await request.validate({ schema: updateUserSchema })
-    const { id } = params
-    const user = await User.find(id)
-    if (!user) {
-      return response.notFound({ message: 'User not found' })
+    const payload = await request.validate({ schema: updateUserSchema })
+    try {
+      const { id } = params
+      const data = await userServiceUpdate(id, payload)
+      if (data === 404) {
+        return response.notFound({ message: 'User not found' })
+      }
+      if (!data) return response.status(503).json({ message: 'Could not update user' })
+      return response.ok(data)
+    } catch (error) {
+      response.status(500).json({ message: 'Server error, try again later' })
     }
-    user.name = payload?.name
-    user.email = payload?.email
-    user.password = payload?.password
-    user.image_url = payload?.image_url
-    user.nationality = payload?.nationality
-    user.postalCode = payload?.postalCode
-
-    await user.save()
-
-    return response.ok(user)
   }
 
   public async destroy({ params, response }: HttpContextContract) {
-    const { id } = params
-    const user = await User.find(id)
-    if (!user) {
-      return response.notFound({ message: 'User not found' })
-    }
-    user.status = 'inactive'
-    await user.save()
+    try {
+      const { id } = params
+      const data = userServiceDestroy(id)
 
-    return response.ok({ message: 'Success! User has been deleted' })
+      if (!data) {
+        return response.notFound({ message: 'User not found' })
+      }
+
+      return response.ok({ message: 'Success! User has been deleted' })
+    } catch (error) {
+      response.status(500).json({ message: 'Server error, try again later' })
+    }
   }
 }

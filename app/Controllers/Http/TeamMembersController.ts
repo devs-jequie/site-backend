@@ -1,6 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
-import TeamMember from 'App/Models/TeamMember'
+
 import {
   teamMemberServiceDestroy,
   teamMemberServiceGetById,
